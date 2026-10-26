@@ -73,10 +73,18 @@
   #pug {
     position: relative;
     z-index: 2;
-    font-size: 92px;
+    width: 180px;
+    max-width: 55%;
     line-height: 1.2;
-    filter: drop-shadow(0 7px 3px #5b442944);
     animation: pugBounce 2.2s ease-in-out infinite;
+  }
+
+  #pug img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 7px 5px #5b442944);
   }
 
   #hint {
@@ -123,8 +131,13 @@
   }
 
   @keyframes pugBounce {
-    0%, 100% { transform: translateY(0) rotate(-2deg); }
-    50% { transform: translateY(-8px) rotate(2deg); }
+    0%, 100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+      transform: translateY(-8px) rotate(2deg);
+    }
   }
 
   max-width: 480px {
