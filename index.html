@@ -51,25 +51,32 @@ let score=0;
 let stream=null;
 let taskDone=false;
 
-async function startAdventure(){
-if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-hint.textContent=“Камера недоступна. Открой сайт по HTTPS в современном браузере.”;
-return;
-}
-try{
-if(!stream){
-stream=await navigator.mediaDevices.getUserMedia({
-video:{facingMode:{ideal:“environment”}},audio:false
-});
-}
-video.srcObject=stream;
-video.hidden=false;
-await video.play();
-hint.textContent=“Гав! Приключение началось! Я твой мопс-проводник 🐾”;
-document.getElementById(“pug”).style.fontSize=“76px”;
-}catch(error){
-hint.textContent=“Не удалось открыть камеру. Проверь разрешение камеры в настройках браузера.”;
-}
+async function startAdventure() {
+  const hint = document.getElementById("hint");
+  const video = document.getElementById("camera");
+  const pug = document.getElementById("pug");
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    hint.textContent = "Камера недоступна. Открой сайт по HTTPS в современном браузере.";
+    return;
+  }
+  try {
+    if (!window.stream) {
+      window.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
+        audio: false
+      });
+    }
+    video.srcObject = window.stream;
+    video.hidden = false;
+    await video.play();
+    hint.textContent = "Гав! Приключение началось! Я твой мопс-проводник 🐾";
+    if (pug) {
+      pug.style.fontSize = "76px";
+    }
+  } catch (error) {
+    hint.textContent = "Не удалось открыть камеру. Проверь разрешение камеры в настройках браузера.";
+    console.error(error);
+  }
 }
 
 function tellStory() {
