@@ -94,16 +94,16 @@ function tellStory() {
   }
 }
 
-function completeTask(){
-if(taskDone){
-document.getElementById(“task”).textContent=“✅ Задание уже выполнено. Отличная работа!”;
-return;
+function completeTask() {
+  if (taskDone) {
+    document.getElementById("task").textContent =
+      "✅ Задание уже выполнено. Отличная работа!";
+    return;
+  }
+  taskDone = true;
+  score += 10;
+  scoreLabel.textContent = "⭐ Очки: " + score;
+  document.getElementById("task").textContent =
+    "✅ Первое задание выполнено! Ты получил 10 очков!";
+  hint.textContent = "Ура! Ты начинаешь путь исследователя города! 🏆";
 }
-taskDone=true;
-score+=10;
-scoreLabel.textContent=“⭐ Очки: “+score;
-document.getElementById(“task”).textContent=“✅ Первое задание выполнено! Ты получил 10 очков!”;
-hint.textContent=“Ура! Ты начинаешь путь исследователя города! 🏆”;
-}
-</body>
-</html>
