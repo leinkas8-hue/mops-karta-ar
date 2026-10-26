@@ -72,18 +72,19 @@ hint.textContent=“Не удалось открыть камеру. Прове�
 }
 }
 
-function tellStory(){
-const story=“Привет, путешественник! Я мопс Карта. В каждом старинном здании спрятана своя история. Посмотри вокруг, найди интересное место и отправляйся за новыми открытиями!”;
-hint.textContent=story;
-if(“speechSynthesis” in window){
-speechSynthesis.cancel();
-const utterance=new SpeechSynthesisUtterance(story);
-utterance.lang=“ru-RU”;
-utterance.rate=0.9;
-speechSynthesis.speak(utterance);
-}else{
-hint.textContent+=” Голосовое чтение не поддерживается этим браузером.”;
-}
+function tellStory() {
+  const story = "Привет, путешественник! Я мопс Карта. В каждом старинном здании спрятана своя история. Посмотри вокруг, найди интересное место и отправляйся за новыми открытиями!";
+  const hint = document.getElementById("hint");
+  if (hint) {
+    hint.textContent = story;
+  }
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(story);
+    utterance.lang = "ru-RU";
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  }
 }
 
 function completeTask(){
