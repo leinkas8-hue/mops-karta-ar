@@ -95,10 +95,27 @@
                 "Гав! Я мопс-историк! Давай исследовать город!";
         }
 
-        function showAR() {
-            document.getElementById("message").textContent =
-                "Скоро здесь появится машина времени с AR!";
-        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    message.textContent = "Браузер не поддерживает доступ к камере. Попробуй открыть сайт в другом браузере.";
+    return;
+}
+
+navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then(function(stream) {
+        const video = document.createElement("video");
+        video.srcObject = stream;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.style.width = "100%";
+        video.style.borderRadius = "16px";
+        video.style.marginTop = "15px";
+
+        document.querySelector(".card").appendChild(video);
+        message.textContent = "Ура! Камера работает! 🐾";
+    })
+    .catch(function(error) {
+        message.textContent = "Не получилось открыть камеру. Разреши доступ к камере в браузере и попробуй снова.";
+    });
     </script>
 </body>
 </html>
