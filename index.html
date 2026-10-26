@@ -215,7 +215,12 @@
   <button onclick="discoverPlace('friendship')">
     🤝 Монумент Дружбы
   </button>
-
+<button onclick="checkLocation()">
+  📍 Проверить, рядом ли я
+</button>
+<p id="location-status">
+  Разреши доступ к геолокации, чтобы искать приключения!
+</p>
   <iframe
     id="city-map"
     title="Карта достопримечательностей Уфы"
@@ -345,6 +350,7 @@ function completeTask() {
   };
 
   const placeInfo = places[place];
+  selectedPlace = place;
   if (!placeInfo) return;
 
   document.getElementById("city-map").src =
@@ -405,6 +411,99 @@ function discoverPlace(place) {
     document.getElementById("task").textContent =
       "🐾 Ты уже исследовал это место! Выбери следующее.";
   }
+}
+ const visitedPlaces = new Set();
+
+const locationTargets = {
+  salavat: {
+    name: "Памятник Салавату Юлаеву",
+    lat: 54.7189,
+    lon: 55.9345
+  },
+  girls: {
+    name: "Фонтан «Семь девушек»",
+    lat: 54.7240,
+    lon: 55.9470
+  },
+  friendship: {
+    name: "Монумент Дружбы",
+    lat: 54.7100,
+    lon: 55.9500
+  }
+};
+
+let selectedPlace = null;
+
+function checkLocation() {
+  const status = document.getElementById("location-status");
+
+  if (!navigator.geolocation) {
+    status.textContent = "Твой браузер не поддерживает геолокацию.";
+    return;
+  }
+
+  if (!selectedPlace) {
+    status.textContent =
+      "Сначала выбери достопримечательность на карте!";
+    return;
+  }
+
+  status.textContent = "📡 Определяем твоё местоположение...";
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      const userLat = position.coords.latitude;
+      const userLon = position.coords.longitude;
+      const target = locationTargets[selectedPlace];
+
+      const distance = getDistance(
+        userLat, userLon, target.lat, target.lon
+      );
+
+      if (distance <= 100) {
+        if (!visitedPlaces.has(selectedPlace)) {
+          visitedPlaces.add(selectedPlace);
+          score += 20;
+          scoreLabel.textContent = "⭐ Очки: " + score;
+          status.textContent =
+            "🏆 Ты рядом с местом «" + target.name +
+            "»! Получено 20 очков!";
+        } else {
+          status.textContent =
+            "🐾 Ты уже получил награду за это место!";
+        }
+      } else {
+        status.textContent =
+          "До места «" + target.name + "» примерно " +
+          Math.round(distance) + " м. Продолжай приключение!";
+      }
+    },
+    error => {
+      status.textContent =
+        "Не удалось определить местоположение. Разреши доступ к геолокации в браузере и попробуй снова.";
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+  );
+}
+
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const rad = degrees => degrees * Math.PI / 180;
+
+  const dLat = rad(lat2 - lat1);
+  const dLon = rad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(lat1)) *
+    Math.cos(rad(lat2)) *
+    Math.sin(dLon / 2) ** 2;
+
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 </script>
 </body>
