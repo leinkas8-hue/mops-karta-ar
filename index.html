@@ -1,90 +1,101 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мопс Карта — AR-приключение</title>
-    <style>
-        * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        padding: 20px;
-        font-family: Arial, sans-serif;
-        background: #fff4e6;
-        color: #49352a;
-        text-align: center;
-    }
-    .card {
-        max-width: 500px;
-        margin: 30px auto;
-        padding: 25px;
-        background: white;
-        border-radius: 24px;
-        box-shadow: 0 5px 20px #00000012;
-    }
-    .pug { font-size: 100px; margin: 15px 0; }
-    h1 { color: #a65c32; }
-    p { line-height: 1.6; }
-    button {
-        width: 100%;
-        padding: 16px;
-        margin-top: 12px;
-        border: none;
-        border-radius: 14px;
-        background: #a65c32;
-        color: white;
-        font-size: 17px;
-        cursor: pointer;
-    }
-    #message { margin-top: 20px; font-weight: bold; }
-    #camera {
-        width: 100%;
-        margin-top: 15px;
-        border-radius: 16px;
-        background: #222;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мопс Карта — AR-приключение</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#fff4e6;color:#49352a}
+header{padding:16px;text-align:center;background:#a65c32;color:white}
+h1{margin:0;font-size:25px}
+main{max-width:520px;margin:auto;padding:16px}
+.card{background:white;padding:18px;border-radius:20px;box-shadow:0 4px 16px #0001;margin-bottom:14px}
+#stage{position:relative;overflow:hidden;background:#29231f;border-radius:18px;min-height:260px;text-align:center;color:white}
+#camera{width:100%;display:block}
+#pug{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:90px;text-shadow:0 3px 10px #0008;pointer-events:none}
+#hint{padding:14px}
+button{width:100%;padding:15px;margin-top:10px;border:0;border-radius:13px;background:#a65c32;color:white;font-size:17px;font-weight:bold}
+button.secondary{background:#e9d3bd;color:#49352a}
+#score{font-size:23px;font-weight:bold;color:#a65c32}
+.small{font-size:14px;line-height:1.5}
 </style>
 </head>
 <body>
-    <div class="card">
-        <div class="pug">🐶</div>
-        <h1>Мопс Карта</h1>
-    <p>Привет, путешественник! Я твой личный гид по истории города.</p>
-    <p>Готов отправиться в приключение и открыть тайны старинных зданий?</p>
-    <button onclick="greet()">Познакомиться с мопсом 🐾</button>
-    <button onclick="showAR()">🔮 Перейти к AR-приключению</button>
-    <div id="message">Жду тебя, исследователь!</div>
-    <video id="camera" autoplay playsinline hidden></video>
-</div>
+<header>
+  <h1>🐶 Мопс Карта</h1>
+  <div>Твоё городское приключение</div>
+</header>
+<main>
+  <section class="card">
+    <div id="stage">
+      <video id="camera" autoplay playsinline hidden></video>
+      <div id="pug">🐶</div>
+      <div id="hint">Привет, исследователь! Нажми «Начать приключение».</div>
+    </div>
+    <button onclick="startAdventure()">📸 Начать приключение</button>
+    <button class="secondary" onclick="tellStory()">🔊 Послушать историю</button>
+  </section>
+  <section class="card">
+    <div id="score">⭐ Очки: 0</div>
+    <p id="task">🎯 Задание: познакомься с мопсом-проводником!</p>
+    <button onclick="completeTask()">🏆 Выполнить задание</button>
+    <p class="small">Подсказка: разреши доступ к камере, когда браузер спросит.</p>
+  </section>
+</main>
 <script>
-    const message = document.getElementById("message");
-    const camera = document.getElementById("camera");
-    function greet() {
-        message.textContent =
-            "Гав! Я мопс-историк! Давай исследовать город!";
-    }
-    async function showAR() {
-        if (!navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia) {
-            message.textContent =
-                "Браузер не поддерживает доступ к камере. Открой сайт по HTTPS.";
-            return;
-        }
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: { ideal: "environment" } },
-                audio: false
-            });
-            camera.srcObject = stream;
-            camera.hidden = false;
-            await camera.play();
-            message.textContent =
-                "Ура! Камера работает! Теперь можно исследовать город! 🐾";
-        } catch (error) {
-            message.textContent =
-                "Не удалось открыть камеру. Разреши доступ к камере в браузере и попробуй снова.";
-        }
-    }
-</script>
+const video=document.getElementById("camera");
+const hint=document.getElementById("hint");
+const scoreLabel=document.getElementById("score");
+let score=0;
+let stream=null;
+let taskDone=false;
+
+async function startAdventure(){
+if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+hint.textContent=“Камера недоступна. Открой сайт по HTTPS в современном браузере.”;
+return;
+}
+try{
+if(!stream){
+stream=await navigator.mediaDevices.getUserMedia({
+video:{facingMode:{ideal:“environment”}},audio:false
+});
+}
+video.srcObject=stream;
+video.hidden=false;
+await video.play();
+hint.textContent=“Гав! Приключение началось! Я твой мопс-проводник 🐾”;
+document.getElementById(“pug”).style.fontSize=“76px”;
+}catch(error){
+hint.textContent=“Не удалось открыть камеру. Проверь разрешение камеры в настройках браузера.”;
+}
+}
+
+function tellStory(){
+const story=“Привет, путешественник! Я мопс Карта. В каждом старинном здании спрятана своя история. Посмотри вокруг, найди интересное место и отправляйся за новыми открытиями!”;
+hint.textContent=story;
+if(“speechSynthesis” in window){
+speechSynthesis.cancel();
+const utterance=new SpeechSynthesisUtterance(story);
+utterance.lang=“ru-RU”;
+utterance.rate=0.9;
+speechSynthesis.speak(utterance);
+}else{
+hint.textContent+=” Голосовое чтение не поддерживается этим браузером.”;
+}
+}
+
+function completeTask(){
+if(taskDone){
+document.getElementById(“task”).textContent=“✅ Задание уже выполнено. Отличная работа!”;
+return;
+}
+taskDone=true;
+score+=10;
+scoreLabel.textContent=“⭐ Очки: “+score;
+document.getElementById(“task”).textContent=“✅ Первое задание выполнено! Ты получил 10 очков!”;
+hint.textContent=“Ура! Ты начинаешь путь исследователя города! 🏆”;
+}
 </body>
 </html>
