@@ -162,6 +162,24 @@
       animation: none;
     }
   }
+ .map-card {
+  margin-top: 20px;
+  padding: 16px;
+  background: #fff8ed;
+  border-radius: 18px;
+}
+
+.map-card h2 {
+  color: #68452f;
+  margin-top: 0;
+}
+
+#place-hint {
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 12px;
+  line-height: 1.5;
+}
 </style>
 </head>
 <body>
@@ -180,6 +198,28 @@
     </div>
     <button onclick="startAdventure()">📸 Начать приключение</button>
     <button class="secondary" onclick="tellStory()">🔊 Послушать историю</button>
+   <div class="map-card">
+    <h2>🗺️ Карта приключений Уфы</h2>
+    <p>Выбери место, которое хочешь исследовать!</p>
+<iframe
+  title="Карта достопримечательностей Уфы"
+  src="https://www.openstreetmap.org/export/embed.html?bbox=55.92%2C54.70%2C56.05%2C54.78&layer=mapnik&marker=54.7352%2C55.9587"
+  width="100%"
+  height="300"
+  style="border:0; border-radius:16px;"
+  loading="lazy">
+</iframe>
+<button onclick="visitPlace('Памятник Салавату Юлаеву')">
+  🐎 Памятник Салавату Юлаеву
+</button>
+<button onclick="visitPlace('Фонтан «Семь девушек»')">
+  ⛲ Фонтан «Семь девушек»
+</button>
+<button onclick="visitPlace('Монумент Дружбы')">
+  🤝 Монумент Дружбы
+</button>
+<p id="place-hint">Нажми на достопримечательность, чтобы получить задание!</p>
+  </div>
   </section>
   <section class="card">
     <div id="score">⭐ Очки: 0</div>
@@ -251,6 +291,15 @@ function completeTask() {
   document.getElementById("task").textContent =
     "✅ Первое задание выполнено! Ты получил 10 очков!";
   hint.textContent = "Ура! Ты начинаешь путь исследователя города! 🏆";
+}
+ function visitPlace(place) {
+  const placeHint = document.getElementById("place-hint");
+  placeHint.textContent =
+    "🎯 Твоё задание: найди на карте место «" + place +
+    "», посмотри на него и узнай, чем оно знаменито. Отличная работа, исследователь!";
+
+  document.getElementById("task").textContent =
+    "🎯 Задание: исследуй место «" + place + "»!";
 }
 </script>
 </body>
