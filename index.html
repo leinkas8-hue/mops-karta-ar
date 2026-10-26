@@ -4,118 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мопс Карта — AR-приключение</title>
-
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background: #fff4e6;
-            color: #49352a;
-            text-align: center;
-        }
-
-        .card {
-            max-width: 500px;
-            margin: 30px auto;
-            padding: 25px;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 5px 20px #00000012;
-        }
-
-        .pug {
-            font-size: 100px;
-            margin: 15px 0;
-        }
-
-        h1 {
-            color: #a65c32;
-        }
-
-        p {
-            line-height: 1.6;
-        }
-
-        button {
-            width: 100%;
-            padding: 16px;
-            margin-top: 12px;
-            border: none;
-            border-radius: 14px;
-            background: #a65c32;
-            color: white;
-            font-size: 17px;
-            cursor: pointer;
-        }
-
-        #message {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
+        * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: #fff4e6;
+        color: #49352a;
+        text-align: center;
+    }
+    .card {
+        max-width: 500px;
+        margin: 30px auto;
+        padding: 25px;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 5px 20px #00000012;
+    }
+    .pug { font-size: 100px; margin: 15px 0; }
+    h1 { color: #a65c32; }
+    p { line-height: 1.6; }
+    button {
+        width: 100%;
+        padding: 16px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 14px;
+        background: #a65c32;
+        color: white;
+        font-size: 17px;
+        cursor: pointer;
+    }
+    #message { margin-top: 20px; font-weight: bold; }
+    #camera {
+        width: 100%;
+        margin-top: 15px;
+        border-radius: 16px;
+        background: #222;
+    }
+</style>
 </head>
-
 <body>
     <div class="card">
         <div class="pug">🐶</div>
-
         <h1>Мопс Карта</h1>
-
-        <p>
-            Привет, путешественник!
-            Я твой личный гид по истории города.
-        </p>
-
-        <p>
-            Готов отправиться в приключение
-            и открыть тайны старинных зданий?
-        </p>
-
-        <button onclick="greet()">
-            Познакомиться с мопсом 🐾
-        </button>
-
-        <button onclick="showAR()">
-            🔮 Перейти к AR-приключению
-        </button>
-
-        <div id="message">
-            Жду тебя, исследователь!
-        </div>
-    </div>
-
-    <script>
-        function greet() {
-    document.getElementById("message").textContent =
-        "Гав! Я мопс-историк! Давай исследовать город!";
-}
-
-function showAR() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        message.textContent = "Браузер не поддерживает доступ к камере.";
-        return;
+    <p>Привет, путешественник! Я твой личный гид по истории города.</p>
+    <p>Готов отправиться в приключение и открыть тайны старинных зданий?</p>
+    <button onclick="greet()">Познакомиться с мопсом 🐾</button>
+    <button onclick="showAR()">🔮 Перейти к AR-приключению</button>
+    <div id="message">Жду тебя, исследователь!</div>
+    <video id="camera" autoplay playsinline hidden></video>
+</div>
+<script>
+    const message = document.getElementById("message");
+    const camera = document.getElementById("camera");
+    function greet() {
+        message.textContent =
+            "Гав! Я мопс-историк! Давай исследовать город!";
     }
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-    .then(function(stream) {
-        const video = document.createElement("video");
-        video.srcObject = stream;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.style.width = "100%";
-        video.style.borderRadius = "16px";
-        video.style.marginTop = "15px";
-
-        document.querySelector(".card").appendChild(video);
-        message.textContent = "Ура! Камера работает! 🐾";
-    })
-    .catch(function(error) {
-        message.textContent = "Не получилось открыть камеру. Разреши доступ к камере в браузере и попробуй снова.";
-    });
-    </script>
+    async function showAR() {
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia) {
+            message.textContent =
+                "Браузер не поддерживает доступ к камере. Открой сайт по HTTPS.";
+            return;
+        }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: "environment" } },
+                audio: false
+            });
+            camera.srcObject = stream;
+            camera.hidden = false;
+            await camera.play();
+            message.textContent =
+                "Ура! Камера работает! Теперь можно исследовать город! 🐾";
+        } catch (error) {
+            message.textContent =
+                "Не удалось открыть камеру. Разреши доступ к камере в браузере и попробуй снова.";
+        }
+    }
+</script>
 </body>
 </html>
