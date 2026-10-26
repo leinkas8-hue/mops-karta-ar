@@ -201,14 +201,35 @@
    <div class="map-card">
     <h2>🗺️ Карта приключений Уфы</h2>
     <p>Выбери место, которое хочешь исследовать!</p>
-<iframe
-  title="Карта достопримечательностей Уфы"
-  src="https://www.openstreetmap.org/export/embed.html?bbox=55.92%2C54.70%2C56.05%2C54.78&layer=mapnik&marker=54.7352%2C55.9587"
-  width="100%"
-  height="300"
-  style="border:0; border-radius:16px;"
-  loading="lazy">
-</iframe>
+<div id="map-points">
+  <p>📍 Выбери место для приключения:</p>
+
+  <button onclick="showPlace('salavat')">
+    🐎 Памятник Салавату Юлаеву
+  </button>
+
+  <button onclick="showPlace('girls')">
+    ⛲ Фонтан «Семь девушек»
+  </button>
+
+  <button onclick="showPlace('friendship')">
+    🤝 Монумент Дружбы
+  </button>
+
+  <iframe
+    id="city-map"
+    title="Карта достопримечательностей Уфы"
+    src="https://www.openstreetmap.org/export/embed.html?bbox=55.92%2C54.70%2C56.05%2C54.78&layer=mapnik&marker=54.7352%2C55.9587"
+    width="100%"
+    height="300"
+    style="border:0; border-radius:16px;"
+    loading="lazy">
+  </iframe>
+
+  <p id="map-description">
+    Нажми на место, чтобы узнать о нём!
+  </p>
+</div>
 <button onclick="visitPlace('Памятник Салавату Юлаеву')">
   🐎 Памятник Салавату Юлаеву
 </button>
@@ -300,6 +321,46 @@ function completeTask() {
 
   document.getElementById("task").textContent =
     "🎯 Задание: исследуй место «" + place + "»!";
+}
+ function showPlace(place) {
+  const places = {
+    salavat: {
+      name: "Памятник Салавату Юлаеву",
+      lat: 54.7189,
+      lon: 55.9345,
+      story: "🐎 Салават Юлаев — национальный герой Башкортостана. Найди памятник и рассмотри его!"
+    },
+    girls: {
+      name: "Фонтан «Семь девушек»",
+      lat: 54.7240,
+      lon: 55.9470,
+      story: "⛲ Этот фонтан посвящён легенде о семи девушках. Узнай, почему их история стала знаменитой!"
+    },
+    friendship: {
+      name: "Монумент Дружбы",
+      lat: 54.7100,
+      lon: 55.9500,
+      story: "🤝 Монумент Дружбы напоминает об истории Башкортостана и России. Отправляйся исследовать это место!"
+    }
+  };
+
+  const placeInfo = places[place];
+  if (!placeInfo) return;
+
+  document.getElementById("city-map").src =
+    "https://www.openstreetmap.org/export/embed.html?bbox=" +
+    (placeInfo.lon - 0.015) + "%2C" +
+    (placeInfo.lat - 0.01) + "%2C" +
+    (placeInfo.lon + 0.015) + "%2C" +
+    (placeInfo.lat + 0.01) +
+    "&layer=mapnik&marker=" +
+    placeInfo.lat + "%2C" + placeInfo.lon;
+
+  document.getElementById("map-description").textContent =
+    placeInfo.story;
+
+  document.getElementById("task").textContent =
+    "🎯 Задание: исследуй место «" + placeInfo.name + "»!";
 }
 </script>
 </body>
