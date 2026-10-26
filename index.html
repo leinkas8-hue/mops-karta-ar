@@ -91,15 +91,15 @@
 
     <script>
         function greet() {
-            document.getElementById("message").textContent =
-                "Гав! Я мопс-историк! Давай исследовать город!";
-        }
-
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    message.textContent = "Браузер не поддерживает доступ к камере. Попробуй открыть сайт в другом браузере.";
-    return;
+    document.getElementById("message").textContent =
+        "Гав! Я мопс-историк! Давай исследовать город!";
 }
 
+function showAR() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        message.textContent = "Браузер не поддерживает доступ к камере.";
+        return;
+    }
 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
     .then(function(stream) {
         const video = document.createElement("video");
