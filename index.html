@@ -204,15 +204,15 @@
 <div id="map-points">
   <p>📍 Выбери место для приключения:</p>
 
-  <button onclick="showPlace('salavat')">
+  <button onclick="discoverPlace('salavat')">
     🐎 Памятник Салавату Юлаеву
   </button>
 
-  <button onclick="showPlace('girls')">
+  <button onclick="discoverPlace('girls')">
     ⛲ Фонтан «Семь девушек»
   </button>
 
-  <button onclick="showPlace('friendship')">
+  <button onclick="discoverPlace('friendship')">
     🤝 Монумент Дружбы
   </button>
 
@@ -361,6 +361,50 @@ function completeTask() {
 
   document.getElementById("task").textContent =
     "🎯 Задание: исследуй место «" + placeInfo.name + "»!";
+}
+ const discoveredPlaces = new Set();
+
+function discoverPlace(place) {
+  const places = {
+    salavat: {
+      name: "Памятник Салавату Юлаеву",
+      story: "Гав! Салават Юлаев — поэт и национальный герой Башкортостана. Его памятник возвышается над рекой Белой. Рассмотри его внимательно!"
+    },
+    girls: {
+      name: "Фонтан «Семь девушек»",
+      story: "Гав-гав! Фонтан «Семь девушек» вдохновлён башкирской легендой о семи сёстрах. Попробуй рассмотреть скульптуры и посчитать фигурки!"
+    },
+    friendship: {
+      name: "Монумент Дружбы",
+      story: "Гав! Монумент Дружбы посвящён историческим связям Башкортостана и России. Найди его на карте и узнай больше об истории города!"
+    }
+  };
+
+  const info = places[place];
+  if (!info) return;
+
+  document.getElementById("map-description").textContent =
+    info.story;
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+    const voice = new SpeechSynthesisUtterance(info.story);
+    voice.lang = "ru-RU";
+    voice.rate = 0.9;
+    window.speechSynthesis.speak(voice);
+  }
+
+  if (!discoveredPlaces.has(place)) {
+    discoveredPlaces.add(place);
+    score += 10;
+    scoreLabel.textContent = "⭐ Очки: " + score;
+    document.getElementById("task").textContent =
+      "🏆 Ты открыл место «" + info.name +
+      "» и получил 10 очков!";
+  } else {
+    document.getElementById("task").textContent =
+      "🐾 Ты уже исследовал это место! Выбери следующее.";
+  }
 }
 </script>
 </body>
