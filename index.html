@@ -392,13 +392,15 @@ function discoverPlace(place) {
   document.getElementById("map-description").textContent =
     info.story;
 
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-    const voice = new SpeechSynthesisUtterance(info.story);
-    voice.lang = "ru-RU";
-    voice.rate = 0.9;
-    window.speechSynthesis.speak(voice);
-  }
+  const audioFiles = {
+  salavat: "salavat.mp3",
+  girls: "girls.mp3"
+};
+
+if (audioFiles[place]) {
+  const audio = new Audio(audioFiles[place]);
+  audio.play();
+}
 
   if (!discoveredPlaces.has(place)) {
     discoveredPlaces.add(place);
