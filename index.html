@@ -371,6 +371,8 @@ function completeTask() {
 }
  const discoveredPlaces = new Set();
 
+let locationAudio = null;
+
 function discoverPlace(place) {
   const places = {
     salavat: {
@@ -390,30 +392,23 @@ function discoverPlace(place) {
   const info = places[place];
   if (!info) return;
 
-  document.getElementById("map-description").textContent =
-    info.story;
+  document.getElementById("map-description").textContent = info.story;
 
   const audioFiles = {
-  salavat: "salavat.mp3",
-  girls: "girls.mp3"
-};
+    salavat: "salavat.mp3",
+    girls: "girls.mp3",
+    friendship: "friendship.mp3"
+  };
 
-if (audioFiles[place]) {
-  const audio = new Audio(audioFiles[place]);
-  audio.play();
-}
-
-  if (!discoveredPlaces.has(place)) {
-    discoveredPlaces.add(place);
-    score += 10;
-    scoreLabel.textContent = "⭐ Очки: " + score;
-    document.getElementById("task").textContent =
-      "🏆 Ты открыл место «" + info.name +
-      "» и получил 10 очков!";
-  } else {
-    document.getElementById("task").textContent =
-      "🐾 Ты уже исследовал это место! Выбери следующее.";
+  if (locationAudio) {
+    locationAudio.pause();
+    locationAudio.currentTime = 0;
   }
+
+  locationAudio = new Audio(audioFiles[place]);
+  locationAudio.play().catch(error => {
+    console.log("Не удалось воспроизвести аудио:", error);
+  });
 }
  const visitedPlaces = new Set();
 
