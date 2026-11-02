@@ -302,8 +302,14 @@ function tellStory() {
     window.currentAudio.currentTime = 0;
   }
 
-  window.currentAudio = new Audio("main-story.mp3");
-  window.currentAudio.play();
+  window.currentAudio = new Audio("./main-story.mp3");
+
+  window.currentAudio.play().catch(error => {
+    console.error("Ошибка воспроизведения:", error);
+    if (hint) {
+      hint.textContent = "Не удалось включить историю. Проверь файл main-story.mp3 на GitHub.";
+    }
+  });
 }
 
 function completeTask() {
