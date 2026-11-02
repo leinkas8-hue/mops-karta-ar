@@ -291,18 +291,19 @@ async function startAdventure() {
 }
 
 function tellStory() {
-  const story = "Привет, путешественник! Я мопс Карта. В каждом старинном здании спрятана своя история. Посмотри вокруг, найди интересное место и отправляйся за новыми открытиями!";
   const hint = document.getElementById("hint");
+
   if (hint) {
-    hint.textContent = story;
+    hint.textContent = "Привет, путешественник! Слушай мою историю!";
   }
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(story);
-    utterance.lang = "ru-RU";
-    utterance.rate = 0.9;
-    window.speechSynthesis.speak(utterance);
+
+  if (window.currentAudio) {
+    window.currentAudio.pause();
+    window.currentAudio.currentTime = 0;
   }
+
+  window.currentAudio = new Audio("main-story.mp3");
+  window.currentAudio.play();
 }
 
 function completeTask() {
